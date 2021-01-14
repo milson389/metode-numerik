@@ -93,38 +93,50 @@ print("Hasil Prediksi : ", "{:.2f}".format(prediksi3))
 print("EA : ", dapetEa(prediksi2, prediksi3), '%')
 
 # Metode Lagrange
-xi = [6, 8, 9, 10]
-fxi = [5.39, 5.06, 4.94, 4.85]
+# xi = [10.5, 12, 12.4, 12.8]
+# fxi = [45.2, 58.1, 60.2, 64.4]
+# xiTanya = 11.5
 
-xTanya = 7
+# x = [6, 8, 9, 10]
+# fx = [5.39, 5.06, 4.94, 4.85]
+# xTanya = 7
+list = []
+prev = []
 
 
-def lagRange(jumlahData):
-    global xTanya, xi, fxi
+def lagrange(a, fa, aTanya, orde):
     result = 0
-    orde = int(jumlahData)
-    for i in range(orde):
-        l = 1
-        for j in range(orde):
+    interpolasi = int(orde)+1
+    for i in range(interpolasi):
+        l = fa[i]
+        for j in range(interpolasi):
             if(j != i):
-                l *= (xTanya-xi[j])/(xi[i]-xi[j])
-        result += l*fxi[i]
+                l *= (aTanya-a[j])/(a[i]-a[j])
+                list.append("{:.4f}".format(l/fa[i]))
+        result += l
     return result
 
 
-hasilLR = [lagRange(2), lagRange(3), lagRange(4)]
+# lagRange(xi, fxi, xiTanya, 3)
+# print(list)
+xi = [6.509, 8.0814, 3.9090, 6.1082, 9.9294,
+      9.9629, 2.2558, 3.0724, 1.5146, 5.4081]
+fxi = [16.41, 16.6266, 15.9, 16.3467, 16.8325,
+       16.8359, 15.3505, 15.6594, 14.9522, 16.2245]
+xTanya = 7.3
+xTanya1 = 5.0
 
-print('\nLagrange Method\n----------------')
-print("\nPrediksi nilai tabel distribusi f dengan v1 = 7 v2 = 10\n-------------------------------------------------------- ")
-for i in range(len(hasilLR)):
-    if(i == 0):
-        print('Hasil Perhitungan Orde', i+1,
-              ': ', "{:.4f}".format(hasilLR[i]))
-        print('Nilai EA : ')
-        print()
+orde = int(input('Masukkan Nilai N ( Orde ke -N ) untuk f(x=7.3) : '))
+print("\nHasil Perhitungan Orde", orde,
+      ": " "{:.4f}".format(lagrange(xi, fxi, xTanya, orde)))
+
+# Untuk menampilkan hasil per orde yang ditentukan
+for i in range(orde):
+    print("\nHasil Perhitungan Orde", i+1,
+          ": " "{:.4f}".format(lagrange(xi, fxi, xTanya, i+1)))
+    if(i == 1):
+        continue
     else:
-        print('Hasil Perhitungan Orde', i+1,
-              ': ', "{:.4f}".format(hasilLR[i]))
         print('Nilai EA dibandingkan Orde sebelumnya : ',
-              dapetEa(hasilLR[i-1], hasilLR[i]), '%')
+              dapetEa(lagrange(xi, fxi, xTanya, i-1), lagrange(xi, fxi, xTanya, i)), '%')
         print()

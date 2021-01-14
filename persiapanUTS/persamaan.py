@@ -1,7 +1,4 @@
 # Audie Milson (535180021)
-# Owen (535180016)
-# James Anderson (535180027)
-# Michael Joses D. (535180037)
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,20 +7,14 @@ from scipy.misc import derivative
 from prettytable import PrettyTable
 
 e = math.exp(1)
-# 'Akar persamaan $f(x) =x^\frac{5}{2} + \frac{1}{2}x^\frac{1}{2} -0.6$'
 
 
 def func(x):
-    return x**2.5+0.5*(x**0.5)-0.6
+    return 3*x + math.sin(x) - math.exp(x)
 
 
 def turunanFunc(x):
-    a = x
-    x = sp.Symbol('x')
-    rumusFungsi = x**2.5+0.5*(x**0.5)-0.6
-    f = (sp.diff(rumusFungsi, x))
-    hasil = sp.lambdify(x, f)
-    return hasil(a)
+    return math.cos(x)-(e**x)+3
 
 
 def dapetXr(a, b):
@@ -51,35 +42,25 @@ iterate = 0
 iteraNewton = 1
 iteraSecant = 1
 
-listIterasi = []
-listIterate = []
-listIteraNewton = []
-listIteraSecant = []
+# # Newton
+# listXiNewton = []
+# listXiCurrNew = []
 
-listXr = []
-listXrReg = []
-# Newton
-listXiNewton = []
-listXiCurrNew = []
+# # Secant
+# listXiSecant = []
+# listXiPrevSecant = []
+# listXiCurrSecant = []
 
-# Secant
-listXiSecant = []
-listXiPrevSecant = []
-listXiCurrSecant = []
+# listErrorNew = [100]
+# listErrorSecant = [100]
 
 
-listError = []
-listErrorReg = []
-listErrorNew = [100]
-listErrorSecant = [100]
-
-
-def bisectionMethod():
-    global iterasi
+def bisectionMethod(tebakan1, tebakan2, toleransiE):
+    iterasi = 0
     print('\nBisection Method \n----------------')
-    xi = float(input('Masukkan nilai tebakan Awal Xi : '))
-    xu = float(input('Masukkan nilai tebakan kedua Xu : '))
-    es = int(input('Masukkan nilai toleransi kesalahan yang diinginkan : '))
+    xi = float(tebakan1)
+    xu = float(tebakan2)
+    es = float(toleransiE)
     ea = 100
 
     while(ea > es):
@@ -92,10 +73,6 @@ def bisectionMethod():
             ea = abs((xr-prevXr)/xr)*100
             print('tingkat error (ea) : ', ea, '%')
 
-        listIterasi.append(iterasi)
-        listXr.append(xr)
-        listError.append(ea)
-
         if(func(xi)*func(xr) < 0):
             xu = xr
         elif (func(xi)*func(xr) > 0):
@@ -103,16 +80,18 @@ def bisectionMethod():
         else:
             break
 
+        bM.add_row([iterasi, "{:.5f}".format(xr), "{:.4f}".format(ea)])
+
         prevXr = xr
         print()
 
 
-def interpolasiLinier():
-    global iterate
+def interpolasiLinier(tebakan1, tebakan2, toleransiE):
+    iterate = 0
     print('\nInterpolasi Linier \n----------------')
-    xi = float(input('Masukkan nilai tebakan Awal Xi : '))
-    xu = float(input('Masukkan nilai tebakan kedua Xu : '))
-    es = int(input('Masukkan nilai toleransi kesalahan yang diinginkan : '))
+    xi = float(tebakan1)
+    xu = float(tebakan2)
+    es = float(toleransiE)
     ea = 100
 
     while(ea > es):
@@ -125,10 +104,6 @@ def interpolasiLinier():
             ea = abs((xr-prevXr)/xr)*100
             print('tingkat error (ea) : ', ea, '%')
 
-        listIterate.append(iterate)
-        listXrReg.append(xr)
-        listErrorReg.append(ea)
-
         if(func(xi)*func(xr) < 0):
             xu = xr
         elif (func(xi)*func(xr) > 0):
@@ -136,15 +111,17 @@ def interpolasiLinier():
         else:
             break
 
+        iL.add_row([iterate, "{:.5f}".format(xr), "{:.4f}".format(ea)])
+
         prevXr = xr
         print()
 
 
-def newtonRhaphson():
+def newtonRhaphson(tebakanAwal, toleransiEr):
     global iteraNewton
     print("\nNewton Rhapson \n--------------")
-    xi = float(input('Masukkan nilai tebakan awal Xi : '))
-    es = int(input('Masukkan % tingkat toleransi error es : '))
+    xi = float(tebakanAwal)
+    es = float(toleransiEr)
     ea = 100
     nextX = nilaiX(xi)
     print()
@@ -173,12 +150,12 @@ def newtonRhaphson():
         listXiCurrNew.append(xi)
 
 
-def secantMethod():
+def secantMethod(nilaiPrev, nilaiCurr, nilaiEr):
     print('Secant Method \n-------------')
     global iteraSecant
-    previousX = float(input('Masukkan nilai Xi-1 : '))
-    currentX = float(input('Masukkan nilai Xi : '))
-    es = int(input('Masukkan % tingkat toleransi kesalahan yang diinginkan : '))
+    previousX = float(nilaiPrev)
+    currentX = float(nilaiCurr)
+    es = float(nilaiEr)
     ea = 100
     theNextX = nextX(previousX, currentX)
     print()
@@ -213,77 +190,59 @@ def secantMethod():
         listXiPrevSecant.append(previousX)
 
 
-bisectionMethod()
+tebakan1 = 0
+tebakan2 = 1.5
+tebakanSecant = 0.2
+es = 0.01
+
+
 bM = PrettyTable()
 bM.field_names = ["Iterasi", "Nilai Xr", "Tingkat Error(ea %)"]
-
-for i in range(len(listIterasi)):
-    bM.add_row([listIterasi[i], "{:.4f}".format(
-        listXr[i]), "{:.4f}".format(listError[i])])
-
+bisectionMethod(tebakan1, tebakan2, es)
 print(bM)
 
 
-interpolasiLinier()
 iL = PrettyTable()
 iL.field_names = ["Iterasi", "Nilai Xr", "Tingkat Error(ea %)"]
-
-for j in range(len(listIterate)):
-    iL.add_row([listIterate[j], "{:.4f}".format(
-        listXrReg[j]), "{:.4f}".format(listErrorReg[j])])
-
+interpolasiLinier(tebakan1, tebakan2, es)
 print(iL)
 
 
-newtonRhaphson()
-nR = PrettyTable()
-nR.field_names = ["Iterasi", "Nilai Xi", "Nilai Xi+1", "Tingkat Error(ea %)"]
+# newtonRhaphson(tebakan1, es)
+# nR = PrettyTable()
+# nR.field_names = ["Iterasi", "Nilai Xi", "Nilai Xi+1", "Tingkat Error(ea %)"]
 
-for k in range(len(listIteraNewton)):
-    nR.add_row([listIteraNewton[k], "{:.4f}".format(listXiCurrNew[k]), "{:.4f}".format(
-        listXiNewton[k]), "{:.4f}".format(listErrorNew[k])])
+# for k in range(len(listIteraNewton)):
+#     nR.add_row([listIteraNewton[k], "{:.4f}".format(listXiCurrNew[k]), "{:.4f}".format(
+#         listXiNewton[k]), "{:.4f}".format(listErrorNew[k])])
 
-print(nR)
-
-
-secantMethod()
-sM = PrettyTable()
-sM.field_names = ["Iterasi", "Nilai Xi-1",
-                  "Nilai Xi", "Nilai Xi+1", "Tingkat Error(ea %)"]
-
-for l in range(len(listIteraSecant)):
-    sM.add_row([listIteraSecant[l], "{:.4f}".format(listXiPrevSecant[l]), "{:.4f}".format(
-        listXiCurrSecant[l]), "{:.4f}".format(listXiSecant[l]), "{:.4f}".format(listErrorSecant[l])])
-
-print(sM)
+# print(nR)
 
 
-plt.subplot(221)
-plt.plot(listIterasi, listError, 'r-o')
-plt.title('Bisection Method')
-plt.ylabel('Error (%)')
-plt.xlabel('Iterasi')
+# secantMethod(tebakan1, tebakanSecant, es)
+# sM = PrettyTable()
+# sM.field_names = ["Iterasi", "Nilai Xi-1",
+#                   "Nilai Xi", "Nilai Xi+1", "Tingkat Error(ea %)"]
 
-plt.subplot(222)
-plt.plot(listIterate, listErrorReg, 'g-o')
-plt.title('Interpolasi Linier')
-plt.ylabel('Error (%)')
-plt.xlabel('Iterasi')
-plt.xticks(listIterate)
+# for l in range(len(listIteraSecant)):
+#     sM.add_row([listIteraSecant[l], "{:.4f}".format(listXiPrevSecant[l]), "{:.4f}".format(
+#         listXiCurrSecant[l]), "{:.4f}".format(listXiSecant[l]), "{:.4f}".format(listErrorSecant[l])])
 
-plt.subplot(223)
-plt.plot(listIteraNewton, listErrorNew, 'b-o')
-plt.title('Newton Rhapson')
-plt.ylabel('Error (%)')
-plt.xlabel('Iterasi')
-plt.xticks(listIteraNewton)
+# print(sM)
 
-plt.subplot(224)
-plt.plot(listIteraSecant, listErrorSecant, 'y-o')
-plt.title('Secant Method')
-plt.ylabel('Error (%)')
-plt.xlabel('Iterasi')
-plt.xticks(listIteraSecant)
 
-plt.tight_layout()
-plt.show()
+# plt.subplot(211)
+# plt.title('Akar persamaan f(x) = 3x + sin(x) - exp(x)')
+# plt.yticks([0.2, 0.3, 0.4, 0.5, 0.6, 0.7])
+# plt.plot(listIterasi, listXr, 'b-o', listIterate,
+#          listXrReg, 'y-o', listIteraNewton, listXiNewton, 'g-o', listIteraSecant, listXiSecant, 'r-o')
+# plt.legend(['Biseksi', 'Regulafalsi', 'Newton Raphson', 'Secant'])
+
+# plt.subplot(212)
+# plt.plot(listIterasi, listError, 'b-o', listIterate, listErrorReg,
+#          'y-o', listIteraNewton, listErrorNew, 'g-o', listIteraSecant, listErrorSecant, 'r-o')
+# plt.yticks([0, 20, 40, 60, 80, 100])
+# plt.legend(['Biseksi', 'Regulafalsi', 'Newton Raphson', 'Secant'])
+
+# plt.tight_layout()
+# plt.show()

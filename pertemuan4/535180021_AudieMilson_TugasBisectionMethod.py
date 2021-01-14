@@ -57,13 +57,14 @@ while(ea >= es):
 
 
 # Plot 1
+plt.subplot(211)
 plt.plot(listIterasi, listXr, 'b-o')
-plt.title('Akar persamaan f(x) = 1/2 xe^(x^(1/2) )-2')
+plt.title(r'Akar persamaan $f(x) =\frac{1}{2} x e^{x^{\frac{1}{2}}} -2$')
 plt.ylabel('Xr')
 plt.yticks([1.3, 1.4, 1.5])
-plt.show()
 
 # Plot 2
+plt.subplot(212)
 plt.plot(listIterasi, listError, 'r--o')
 plt.ylabel('Error (%)')
 plt.xlabel('Iterasi')
